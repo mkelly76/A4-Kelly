@@ -2,7 +2,7 @@
      import '../style.css'
      let todoItem = '';
      let todoList = [];
-
+     $: isDone = todoList.filter(item => item.done);
      function addToArray() {
           if (todoItem == '') {
                return;
@@ -19,6 +19,9 @@
      function removeThis(index) {
           todoList.splice(index, 1);
           todoList = todoList;
+     }
+     function clearDone() {
+          todoList = todoList.filter(item => !item.done)
      }
 </script>
 
@@ -39,6 +42,10 @@
           </li>
      {/each}
 </ul>
+
+{#if isDone.length > 0}
+<button on:click={clearDone}>Remove Done</button>
+{/if}
 
 <style>
      ul {

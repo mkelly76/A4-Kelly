@@ -1,11 +1,24 @@
 <script>
-     import '../style.css'
+     import '../style.css';
+     import { writable } from 'svelte/store';
      let todoItem = '';
+     let storedList;
      let urgent, important, normal, low, someday; 
-     let todoList = [];
+     let todoList = writable([]);
 
-     $: isDone = todoList.filter(item => item.done);
-     $: somedayList = todoList.filter(item => item.someday)
+     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+          storedList = localStorage.getItem('storedList');
+          if(storedList) {
+               $todoList = (JSON.parse(storedList));
+          }
+     }
+
+     function updateList() {
+          return storedList = localStorage.setItem('storedList', JSON.stringify($todoList));
+     }
+
+     $: isDone = $todoList.filter(item => item.done);
+     $: somedayList = $todoList.filter(item => item.someday);
 
      function addToArray() {
           if (todoItem == '') {
@@ -13,7 +26,7 @@
           }
           //todoList.push(todoItem);
           //todoList = todoList;
-          todoList = [...todoList, {
+          $todoList = [...$todoList, {
                text: todoItem,
                done: false,
                urgent: urgent,
@@ -22,18 +35,20 @@
                low: low,
                someday: someday
           }];
-          console.log(todoList);
+          console.log($todoList);
+          updateList();
           todoItem = '';
-
-          todoList.splice(index,1);
-          todoList = todoList;
+          urgent = false;
+          someday = false;
      }
      function removeThis(index) {
-          todoList.splice(index, 1);
-          todoList = todoList;
+          $todoList.splice(index, 1);
+          $todoList = $todoList;
+          updateList();
      }
      function clearDone() {
-          todoList = todoList.filter(item => !item.done)
+          $todoList = $todoList.filter(item => !item.done)
+          updateList();
      }
 </script>
 
@@ -41,7 +56,6 @@
 
 <form on:submit|preventDefault={addToArray}>
      <input type="text" bind:value={todoItem}>
-     <button type="submit">Add</button>
      <p>Choose Category</p>
      <input type="checkbox" name="urgent" id="urgent" class="urgent" bind:checked={urgent}>
      <label for="urgent">Urgent</label>
@@ -60,9 +74,9 @@
 </form>
 
 <ul>
-     {#each todoList as item, index}
-          <li>
-               <input type="checkbox" bind:checked={item.done}>
+     {#each $todoList as item, index}
+          <li class:urgent={item.urgent} class:low={item.low}>
+               <input type="checkbox" bind:checked={item.done} on:change={updateList}>
                <span class:done={item.done}>{item.text}</span>
                <span on:click={() => removeThis(index)} 
                class="remove" role="button" tabindex="0">&times;</span>
@@ -92,5 +106,8 @@
      }
      .urgent {
           color: red;
+     }
+     .low {
+          color: greenyellow;
      }
 </style>

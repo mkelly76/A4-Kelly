@@ -134,8 +134,8 @@
           width: 100%;
           font-size: 1.1rem;
           box-shadow:
-               0 2px 4px 0 rgb(0 0 0 / 20%),
-               0 2.5rem 5rem 0 rgb(0 0 0 / 10%);
+               0 2px 4px 0 rgb(47 79 79 / 20%),
+               0 2.5rem 5rem 0 rgb(47 79 79 / 10%);
      }
      .removeBtn {
           border: 1px solid darkslategrey;
@@ -146,8 +146,8 @@
           font-size: 0.8rem;
           width: 50%;
           box-shadow:
-               0 2px 4px 0 rgb(0 0 0 / 20%),
-               0 2.5rem 5rem 0 rgb(0 0 0 / 10%);
+               0 2px 4px 0 rgb(47 79 79 / 20%),
+               0 2.5rem 5rem 0 rgb(47 79 79 / 10%);
      }
      ul {
           list-style: none;

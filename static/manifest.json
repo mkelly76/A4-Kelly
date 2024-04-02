@@ -1,0 +1,13 @@
+{
+    "name": "AgendaZen",
+    "start_url": "/",
+    "display": "fullscreen",
+    "icons": [
+      {
+        "src": "icon.png",
+        "type": "image/png",
+        "sizes": "1024x1024"
+      }
+    ]
+  }
+  

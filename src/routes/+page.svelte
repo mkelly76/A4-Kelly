@@ -1,4 +1,6 @@
 <script>
+     import { fade, fly } from 'svelte/transition';
+     import { bounceIn } from 'svelte/easing';
      import '../style.css';
      import { writable } from 'svelte/store';
      let todoItem = '';
@@ -84,7 +86,7 @@
 
      <ul role="list" class="todoList">
           {#each $todoList as item, index}
-               <li class:urgent={item.urgent} class:important={item.important} class:normal={item.normal} class:low={item.low} class:someday={item.someday}>
+               <li in:fly={{ y:10, duration: 500 }} eased = bounceIn(5000) out:fade={{duration: 500}} class:urgent={item.urgent} class:important={item.important} class:normal={item.normal} class:low={item.low} class:someday={item.someday}>
                     <input type="checkbox" bind:checked={item.done} on:change={updateList}>
                     <span class:done={item.done}>{item.text}</span>
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -102,9 +104,9 @@
 <style>
      .agendazen {
           background: #ffffffb7;
-          margin: 2rem 0 4rem 0;
+          margin: 5vw auto;
           padding: 1rem;
-          max-width: max-content;
+          max-width: 500px;
           box-shadow:
                0 2px 4px 0 rgb(0 0 0 / 20%),
                0 2.5rem 5rem 0 rgb(0 0 0 / 10%);

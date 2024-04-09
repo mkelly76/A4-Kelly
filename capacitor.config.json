@@ -1,0 +1,8 @@
+{
+  "appId": "art.mkelly.agendazen",
+  "appName": "AgendaZen",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

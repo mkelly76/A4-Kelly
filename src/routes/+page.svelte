@@ -20,6 +20,7 @@
      }
 
      $: isDone = $todoList.filter(item => item.done);
+     $: somedayList = $todoList.filter(item => item.someday);
 
      function addToArray() {
           if (todoItem == '') {
@@ -41,7 +42,7 @@
           todoItem = '';
           urgent = false;
           important = false;
-          normal = false;
+          normal = true;
           low = false;
           someday = false;
      }
@@ -55,17 +56,17 @@
           updateList();
      }
 </script>
-<div class="agendazen">
+<div class="agendazen tasks">
      <h1>AgendaZen</h1>
 
      <form on:submit|preventDefault={addToArray}>
-          <h2 class=label-wrapper>
+          <h3 class=label-wrapper>
                <label class="label__lg">New Task:</label>
-          </h2>
+          </h3>
           <input type="text" class="input__lg" bind:value={todoItem}>
-          <h2 class=label-wrapper>
+          <h3 class=label-wrapper>
                <label class="label__lg">Importance:</label>
-          </h2>
+          </h3>
           <div class="importance">
                <input type="checkbox" name="urgent" id="urgent" bind:checked={urgent}>
                <label for="urgent" class="urgent">Urgent</label>
@@ -84,38 +85,62 @@
           
      </form>
 
-     <ul role="list" class="todoList">
+     <!--<ul role="list" class="todoList">
           {#each $todoList as item, index}
-               <li in:fly={{ y:10, duration: 500 }} eased = bounceIn(5000) out:fade={{duration: 500}} class:urgent={item.urgent} class:important={item.important} class:normal={item.normal} class:low={item.low} class:someday={item.someday}>
+               <li in:fly={{ y:10, duration: 500 }} eased = bounceIn(500) out:fade={{duration: 500}} class:urgent={item.urgent} class:important={item.important} class:normal={item.normal} class:low={item.low} class:someday={item.someday}>
                     <input type="checkbox" bind:checked={item.done} on:change={updateList}>
-                    <span class:done={item.done}>{item.text}</span>
+                    <span class:done={item.done}>{item.text}</span>-->
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
-                    <span on:click={() => removeThis(index)} 
+                    <!--<span on:click={() => removeThis(index)} 
                     class="remove" role="button" aria-pressed="false" tabindex="0"><span class="visually-hidden">Remove This</span>&times;</span>
                </li>
           {/each}
-     </ul>
+     </ul>-->
+</div>
 
+{#if somedayList.length > 0}
+<div class="agendazen somedayList" in:fly={{ y:10, duration: 500 }} eased = bounceIn(500) out:fade={{duration: 500}}>
+     <h2 class="someday">Someday</h2>
+     <ul>
+          {#each somedayList as item, index}
+               <li in:fly={{ y:10, duration: 500 }} eased = bounceIn(500) out:fade={{duration: 500}}>
+                    <input type="checkbox" bind:checked={item.done} on:change={updateList}>
+                    <span class:done={item.done}>{item.text}</span>
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <span on:click={() => removeThis(index)} class="remove" role="button" aria-pressed="false" tabindex="0"><span class="visually-hidden">Remove This</span>&times;</span>
+               </li>
+          {/each}
+     </ul>
      {#if isDone.length > 0}
      <button on:click={clearDone} class="removeBtn">REMOVE COMPLETED</button>
      {/if}
 </div>
+{/if}
+
+
+
 
 <style>
      .agendazen {
           background: #ffffffb7;
-          margin: 5vw auto;
+          margin: 1vw auto;
           padding: 1rem;
           max-width: 500px;
           box-shadow:
                0 2px 4px 0 rgb(0 0 0 / 20%),
                0 2.5rem 5rem 0 rgb(0 0 0 / 10%);
-          margin-left: auto;
-          margin-right: auto;
+          border-radius: 3px;
+     }
+     .tasks {
+          margin: 5vw auto 1vw;
+     }
+     .somedayList {
+         outline: 4px dotted #bd00ff; 
+         outline-offset: -5px;       
      }
      button {
           border: none;
-          margin: 0;
+          margin: 0.5em 0;
           padding: 0;
           width: auto;
           overflow: visible;
@@ -128,9 +153,14 @@
           appearance: none;
           font-weight: 700;
      }
+     .importance {
+          padding: 2em 0;
+          display: flex;
+          justify-content: space-around;
+     }
      .btn {
           border: 1px solid darkslategrey;
-          padding: 2px;
+          padding: 0.5em;
           cursor: pointer;
           display: inline-block;
           width: 100%;
@@ -138,10 +168,11 @@
           box-shadow:
                0 2px 4px 0 rgb(47 79 79 / 20%),
                0 2.5rem 5rem 0 rgb(47 79 79 / 10%);
+          border-radius: 25px;
      }
      .removeBtn {
           border: 1px solid darkslategrey;
-          padding: 2px;
+          padding: 0.5em;
           margin: 0 0 2vw 0;
           cursor: pointer;
           display: inline-block;
@@ -150,10 +181,11 @@
           box-shadow:
                0 2px 4px 0 rgb(47 79 79 / 20%),
                0 2.5rem 5rem 0 rgb(47 79 79 / 10%);
+          border-radius: 25px;
      }
      ul {
           list-style: none;
-          padding: 0;
+          padding: 0 1vw;
      }
      li {
           font-size: 1.5rem;
@@ -161,9 +193,15 @@
           font-style: italic;
           border-bottom: rgba(47, 79, 79, 0.24) solid 0.25px;
      }
+     .somedayList li input[type="checkbox"] {
+          width: 1.1em;
+          height: 1.1rem;
+          accent-color: #bd00ff;
+     }
      .done {
           color: darkslategrey;
-          text-decoration: line-through;
+          text-decoration: line-through solid 1px;
+          opacity: 0.5;
      }
      .remove {
           color: darkslategrey;
@@ -173,17 +211,33 @@
      .urgent {
           color: #FF0000;
      }
+     #urgent {
+          accent-color: #ff0000;
+     }
      .important {
           color: #FF5C00;
+     }
+     #important {
+          accent-color: #ff5c00;
      }
      .normal {
           color: #001AFF; 
      }
+     #normal {
+          accent-color: #001AFF;
+     }
      .low {
           color: #039200;
      }
+     #low {
+          accent-color: #039200;
+     }
      .someday {
-          color: #BD00FF;
+          color: #bd00ff;
+          text-decoration-color: #bb00ff;
+     }
+     #someday {
+          accent-color: #bd00ff;          
      }
      .importance {
           padding: 0 0 1.5vw 0;

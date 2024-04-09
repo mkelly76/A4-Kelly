@@ -1,7 +1,7 @@
 {
   "appId": "art.mkelly.agendazen",
   "appName": "AgendaZen",
-  "webDir": "dist",
+  "webDir": "build",
   "server": {
     "androidScheme": "https"
   }

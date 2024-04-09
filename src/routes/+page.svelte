@@ -5,9 +5,9 @@
      import { writable } from 'svelte/store';
      let todoItem = '';
      let storedList;
-     let urgent, important, normal, low, someday; 
+     let urgent, important, low, someday, selected; 
      let todoList = writable([]);
-
+     let normal = true; 
      if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
           storedList = localStorage.getItem('storedList');
           if(storedList) {
@@ -55,6 +55,43 @@
           $todoList = $todoList.filter(item => !item.done)
           updateList();
      }
+     function itemImportance(event) {
+          selected = event.currentTarget.value;
+          switch (selected) {
+               case 'urgent':
+                    urgent = true;
+                    important = false;
+                    normal = false;
+                    low = false;
+                    someday = false;
+               case 'important':
+               urgent = false;
+                    important = true;
+                    normal = false;
+                    low = false;
+                    someday = false;
+                    case 'normal':
+               urgent = false;
+                    important = false;
+                    normal = true;
+                    low = false;
+                    someday = false;
+               case 'low':
+               urgent = false;
+                    important = false;
+                    normal = false;
+                    low = true;
+                    someday = false;
+               case 'someday':
+               urgent = false;
+                    important = false;
+                    normal = false;
+                    low = false;
+                    someday = true;
+
+          }
+          console.log(selected);
+     }
 </script>
 <div class="agendazen tasks">
      <h1>AgendaZen</h1>
@@ -68,16 +105,16 @@
                <label class="label__lg">Importance:</label>
           </h3>
           <div class="importance">
-               <input type="checkbox" name="urgent" id="urgent" bind:checked={urgent}>
-               <label for="urgent" class="urgent">Urgent</label>
-               <input type="checkbox" name="important" id="important" bind:checked={important}>
-               <label for="important" class="important">Important</label>
-               <input type="checkbox" name="normal" id="normal" bind:checked={normal}>
-               <label for="normal" class="normal">Normal</label>
-               <input type="checkbox" name="low" id="low" bind:checked={low}>
-               <label for="low" class="low">Low</label>
-               <input type="checkbox" name="someday" id="someday" bind:checked={someday}>
-               <label for="someday" class="someday">Someday</label>
+               
+               <label for="urgent" class="urgent"><input type="radio" name="importance" id="urgent" value="urgent" on:change={itemImportance}> Urgent</label>
+               
+               <label for="important" class="important"><input type="radio" name="importance" id="important" value="important" on:change={itemImportance}> Important</label>
+               
+               <label for="normal" class="normal"><input type="radio" name="importance" id="normal" value="normal" on:change={itemImportance}> Normal</label>
+               
+               <label for="low" class="low"><input type="radio" name="importance" id="low" value="low" on:change={itemImportance}> Low</label>
+               
+               <label for="someday" class="someday"><input type="radio" name="importance" id="someday" value="someday" on:change={itemImportance}> Someday</label>
           </div>
           <div>
                <button type="submit" class="btn btn__primary btn__lg">ADD</button>
@@ -107,7 +144,7 @@
                     <input type="checkbox" bind:checked={item.done} on:change={updateList}>
                     <span class:done={item.done}>{item.text}</span>
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
-                    <span on:click={() => removeThis(index)} class="remove" role="button" aria-pressed="false" tabindex="0"><span class="visually-hidden">Remove This</span>&times;</span>
+                    <span on:click={() => removeThis(index)} class="remove" role="button" aria-pressed="false" tabindex="0"><span class="visually-hidden">Remove This</span>&#128465</span>
                </li>
           {/each}
      </ul>
@@ -148,15 +185,12 @@
           color: inherit;
           font: inherit;
           line-height: normal;
-          -webkit-font-smoothing: inherit;
-          -moz-osx-font-smoothing: inherit;
           appearance: none;
           font-weight: 700;
      }
      .importance {
-          padding: 2em 0;
           display: flex;
-          justify-content: space-around;
+          justify-content: space-evenly;
      }
      .btn {
           border: 1px solid darkslategrey;
@@ -192,11 +226,19 @@
           font-weight: 300;
           font-style: italic;
           border-bottom: rgba(47, 79, 79, 0.24) solid 0.25px;
+          display: flow-root;
      }
      .somedayList li input[type="checkbox"] {
           width: 1.1em;
           height: 1.1rem;
           accent-color: #bd00ff;
+     }
+     .importance input {
+          margin: 0;
+     }
+     .importance label {
+          margin: 0;
+          float: left;
      }
      .done {
           color: darkslategrey;
@@ -207,6 +249,9 @@
           color: darkslategrey;
           cursor: pointer;
           float: right;
+          font-size: 1rem;
+          font-style: normal;
+          line-height: 2;
      }
      .urgent {
           color: #FF0000;

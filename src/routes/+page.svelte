@@ -35,16 +35,19 @@
                important: important,
                normal: normal,
                low: low,
-               someday: someday
+               someday: someday,
+               selected: selected
           }];
           console.log($todoList);
           updateList();
+          itemImportance(event);
           todoItem = '';
           urgent = false;
           important = false;
           normal = true;
           low = false;
           someday = false;
+          selected = true;
      }
      function removeThis(index) {
           $todoList.splice(index, 1);
@@ -88,7 +91,6 @@
                     normal = false;
                     low = false;
                     someday = true;
-
           }
           console.log(selected);
      }
